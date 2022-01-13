@@ -1,20 +1,18 @@
 import numpy as np
 import matplotlib.pyplot as plt
 # BOEING 787-9
-DISTANCE = 5862.03  # km (distance Amsterdam - New York)
-SPEED = 900/3600  # km/s
+DISTANCE = 5862.03*1000  # m (distance Amsterdam - New York)
+SPEED = 900/3.6  # m/s
 FUEL = 126370
 ZERO_FUEL = 181400  # KG
 FUEL = 80000  # KG
-FUEL_USSAGE_KM = 7.18  # kg/km
-FUEL_USSAGE_TIME = FUEL_USSAGE_KM*SPEED  # kg/s
 MAX_HEIGHT = 13100  # m
-MOTOR_POWER = 7.7/1000  # kg/N*S
+MOTOR_POWER = 7.7/(1000*1000)  # g/N*S
 WING_SPAN = 360.5  # m2
 C = 0.012  # air drag coefficent of subsonic transport airplane.
 AIR_DENSITTY = 1.225  # kg/m^3
-IMPULSE = 13200
-THRUST = 360.4 * 1000 * 2
+# IMPULSE = 13200
+THRUST = 360.4 * 1000 * 2 #N/s
 # 1. Lift (N) >= GY (N)
 # KG/N
 # accelateratie = N-AR/KG
@@ -77,9 +75,11 @@ boeing = plane(max_speed=SPEED, empty_weight=ZERO_FUEL, fuel=FUEL, max_height=MA
 timeLst, positionLst, fuelLst, accelerationLst, velocityLst = flight(boeing, DISTANCE, AIR_DENSITTY)
 print(timeLst)
 print("------------------------------------------")
-print(positionLst)
+print(velocityLst)
 print("------------------------------------------")
 print(fuelLst)
+print("------------------------------------------")
+print(positionLst)
 print("------------------------------------------")
 plt.plot(timeLst, fuelLst)
 plt.show()
