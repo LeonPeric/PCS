@@ -9,14 +9,13 @@ FUEL = 80000  # KG
 FUEL_USSAGE_KM = 7.18  # kg/km
 FUEL_USSAGE_TIME = FUEL_USSAGE_KM*SPEED  # kg/s
 MAX_HEIGHT = 13100  # m
-MOTOR_POWER = (7.7 * 2)/1000  # kg/N*S
+MOTOR_POWER = 7.7/1000  # kg/N*S
 WING_SPAN = 360.5  # m2
 C = 0.012  # air drag coefficent of subsonic transport airplane.
 AIR_DENSITTY = 1.225  # kg/m^3
 IMPULSE = 13200
-THRUST = 9.81 * IMPULSE * FUEL_USSAGE_TIME
+THRUST = 360.4 * 1000 * 2
 # 1. Lift (N) >= GY (N)
-
 # KG/N
 # accelateratie = N-AR/KG
 # speed = prev_speed + accelaratie
