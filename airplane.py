@@ -47,7 +47,7 @@ class cl_plane():
 
 class Wind():
     def __init__(self, scale) -> None:
-        self.Beaufort = [0.2, 1.5, 3.3, 5.4, 7.9, 10.7, 13.8, 17.1, 20.7, 24.4, 28.4, 32.6, 36.8]
+        self.Beaufort = [0, 0.2, 1.5, 3.3, 5.4, 7.9, 10.7, 13.8, 17.1, 20.7, 24.4, 28.4, 32.6, 36.8]
         self.maxspeed = self.Beaufort[scale]
         self.speed = random.uniform(-self.maxspeed, 0)
         self.max_acc = 0.1 * self.maxspeed
@@ -261,7 +261,11 @@ class Flight():
 boeing = cl_plane(max_velocity=SPEED, empty_weight=ZERO_FUEL, fuel=FUEL, max_height=MAX_HEIGHT, power=MOTOR_POWER, wing_span=WING_SPAN, thrust=THRUST, takeoff_speed=TAKEOFF_SPEED)
 
 usedLst = []
-for i in range(13):
+wind = Wind(0)
+flight_sim = Flight(boeing, wind, DISTANCE, AIR_DENSITTY)
+flight_sim.run_sim(ASCEND_ANGLE, DESCEND_ANGLE)
+fuel_no_wind = flight_sim.total_fuel_used
+for i in range(1,14):
     print(i)
     used = 0
     for j in range(10):
@@ -271,18 +275,17 @@ for i in range(13):
         flight_sim.run_sim(ASCEND_ANGLE, DESCEND_ANGLE)
         #plt.plot(flight_sim.timeLst, flight_sim.fuelLst, label=f"Windkracht: {i}")
         used += flight_sim.total_fuel_used
-    mean = used/100
-    mean /= 10**6
+    mean = used/10
     usedLst.append(mean)
 
 diff_0 = []
-for i in range(1,13):
+for i in range(13):
     average_fuel = usedLst[i]
-    difference = (average_fuel/usedLst[0]-1)*100
+    difference = (average_fuel/fuel_no_wind-1)*100
     diff_0.append(difference)
-bars = [f"Windkracht: {i}" for i in range(1,13)]
-plt.bar([i for i in range(12)], diff_0)
-plt.xticks([i for i in range(12)], bars)
+bars = [f"Windkracht: {i}" for i in range(13)]
+plt.bar([i for i in range(13)], diff_0)
+plt.xticks([i for i in range(13)], bars)
 plt.show()
 
 
