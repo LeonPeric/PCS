@@ -64,7 +64,7 @@ class Flight():
     
     
     def calc_air_ressistance(self):
-        force = 1/2 * self.air_density * ((self.velocity-self.wind.speed) ** 2) * self.plane.wing_span * self.drag_cov
+        force = 1/2 * self.air_density * ((self.velocity+self.wind.speed) ** 2) * self.plane.wing_span * self.drag_cov
 
         return force
         
@@ -230,14 +230,14 @@ class Flight():
         self.landing()
         # print(self.time)
 
-boeing = cl_plane(max_velocity=SPEED, empty_weight=ZERO_FUEL, fuel=FUEL, max_height=MAX_HEIGHT, power=MOTOR_POWER, wing_span=WING_SPAN, thrust=THRUST, takeoff_speed=TAKEOFF_SPEED)
+boeing = Plane(max_velocity=SPEED, empty_weight=ZERO_FUEL, fuel=FUEL, max_height=MAX_HEIGHT, power=MOTOR_POWER, wing_span=WING_SPAN, thrust=THRUST, takeoff_speed=TAKEOFF_SPEED)
 
 usedLst = []
-wind = Wind(0)
+wind = Wind(-1)
 flight_sim = Flight(boeing, wind, DISTANCE, AIR_DENSITTY)
 flight_sim.run_sim(ASCEND_ANGLE, DESCEND_ANGLE)
 fuel_no_wind = flight_sim.total_fuel_used
-for i in range(1,14):
+for i in range(13):
     print(i)
     used = 0
     for j in range(10):
