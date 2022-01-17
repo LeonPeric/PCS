@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import math
+
 # BOEING 787-9
 DISTANCE = 5862.03*1000  # m (distance Amsterdam - New York)
 SPEED = 900/3.6  # m/s
@@ -97,7 +98,8 @@ class Flight():
         self.upward_acceleration = upward_force / self.mass
 
         return True
-    
+
+
     def calc_constant_ascend(self):
         gravity = self.mass * 9.81
         lift = -self.calc_lift()
@@ -111,10 +113,7 @@ class Flight():
         return thrust
         
 
-
-
     def update_lsts(self):
-        #update lists
         self.velocityLst.append(self.velocity)
         self.heightLst.append(self.height)
         self.positionLst.append(self.position)
