@@ -2,6 +2,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import math
 import random
+from Plane.plane import Plane
+from Wind.wind import Wind
 
 # BOEING 787-9
 DISTANCE = 5862.03*1000  # m (distance Amsterdam - New York)
@@ -30,36 +32,6 @@ TAKEOFF_SPEED = 80 #m/s
 # air_resistance in Newton.
 
 # Lift (N) == GY (N)
-
-
-class cl_plane():
-    def __init__(self, max_velocity, empty_weight, fuel, max_height, power, wing_span, thrust, takeoff_speed) -> None:
-        self.max_velocity = max_velocity
-        self.empty_weight = empty_weight
-        self.fuel = fuel
-        self.weight = self.fuel + self.empty_weight
-        self.max_height = max_height
-        self.power = power
-        self.wing_span = wing_span
-        self.thrust = thrust
-        self.takeoff_speed = takeoff_speed
-
-
-class Wind():
-    def __init__(self, scale) -> None:
-        self.Beaufort = [0, 0.2, 1.5, 3.3, 5.4, 7.9, 10.7, 13.8, 17.1, 20.7, 24.4, 28.4, 32.6, 36.8]
-        self.maxspeed = self.Beaufort[scale]
-        self.speed = random.uniform(-self.maxspeed, 0)
-        self.max_acc = 0.1 * self.maxspeed
-    
-    def change_wind(self):
-        if self.speed >= 0:
-            self.speed += random.randint(-10, 0) * self.max_acc / 10
-        elif self.speed <= -self.maxspeed:
-            self.speed += random.randint(0, 10) * self.max_acc / 10
-        else:
-            self.speed += random.randint(-10, 10) * self.max_acc / 10
-
 
 class Flight():
     def __init__(self, plane, wind, distance, air_density, C=0.012, dt=1) -> None:
