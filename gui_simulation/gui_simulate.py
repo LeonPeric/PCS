@@ -5,7 +5,7 @@ import math
 sys.path.insert(0, "C:\\Users\\leonp\\Documents\\UvA\\Jaar 3\\3. Project Computational Science\\PCS\\")
 import airplane as plane
 
-# variables for simulation
+# variables for screen
 width = 320*3
 height = 240*3
 size = [width, height]
@@ -24,7 +24,6 @@ airplane_img = pygame.transform.scale(airplane_img, [size[0] * SCALE_FACTOR, siz
 backup_airplane = airplane_img.copy()
 airplane_rect = airplane_img.get_rect()
 
-# calculate the height map for the airplane, this will be changed when the simulation works.
 bottom = screen.get_height() - 100
 
 # get the height map for the plane
@@ -33,7 +32,8 @@ flight_sim.run_sim(plane.ASCEND_ANGLE, plane.DESCEND_ANGLE)
 
 max_height = max(flight_sim.heightLst)
 min_height = min(flight_sim.heightLst)
-height_map = [620 - (item - min_height)/(max_height - min_height) * (bottom - 100) for item in flight_sim.heightLst]
+# normalize the height map values to the correct pixel coordinates
+height_map = [bottom - (item - min_height)/(max_height - min_height) * (bottom - 100) for item in flight_sim.heightLst]
 max_height = max(height_map)
 min_height = min(height_map)
 
@@ -48,21 +48,22 @@ def simulate_plane(height_map, screen, airplane_img, airplane_rect):
             angled = True
         elif height_map[i] == min_height:
             if angled:
-                # airplane_img = pygame.transform.rotate(airplane_img, math.degrees(-plane.ASCEND_ANGLE_NOSE))
-                airplane_img = backup_airplane
+                airplane_img = backup_airplane.copy()
                 angled = False
         elif height_map[i] > min_height and not angled:
             airplane_img = pygame.transform.rotate(airplane_img, math.degrees(plane.DESCEND_ANGLE_NOSE))
             angled = True
+        elif i > 100 and height_map[i] == bottom:
+            airplane_img = backup_airplane
 
         # FPS
         if height_map[i] > min_height:
-            clock.tick(100)
+            clock.tick(50)
         elif height_map[i] == min_height:
             clock.tick(10**10)
 
         # set the y location of the airplane
-        if angled == True:
+        if angled:
             airplane_rect.y = height_map[i] - 50
         else:
             airplane_rect.y = height_map[i]
@@ -74,13 +75,18 @@ def simulate_plane(height_map, screen, airplane_img, airplane_rect):
 
         # change the value of distance traveld
         font = pygame.font.Font(None, 50)
-        text = font.render(f"Distance traveled is: {round(flight_sim.positionLst[i])}", 1, (10, 10, 10))
+        text = font.render(f"Distance traveled is: {round(flight_sim.positionLst[i]) / 1000} km", 1, (10, 10, 10))
         textpos = text.get_rect()
 
         # fill the screen with all the elements
         screen.fill([61, 197, 255])
         ground = pygame.Rect(0, bottom, width, 150)
-        pygame.draw.rect(screen, [10, 120, 39], ground)
+        if flight_sim.positionLst[i] < 24000:
+            pygame.draw.rect(screen, [10, 120, 39], ground)
+        elif flight_sim.positionLst[i] >= 24000 and flight_sim.positionLst[i] < plane.DISTANCE - 200000:
+            pygame.draw.rect(screen, [11, 19, 163], ground)
+        elif flight_sim.positionLst[i] >= plane.DISTANCE - 200000:
+            pygame.draw.rect(screen, [10, 120, 39], ground)
         screen.blit(text, textpos)
         screen.blit(airplane_img, airplane_rect)
         pygame.display.flip()
