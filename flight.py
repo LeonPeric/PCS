@@ -2,8 +2,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 import math
 import random
-from Plane.plane import Plane
-from Wind.wind import Wind
+from Objects.plane import Plane
+from Objects.wind import Wind
+from Objects.jet_stream import Jet_stream
+from Objects.temperature import Temperature
 
 # BOEING 787-9
 DISTANCE = 5862.03*1000  # m (distance Amsterdam - New York)
@@ -25,6 +27,8 @@ DESCEND_ANGLE_WING = math.radians(-25)
 ASCEND_ANGLE = (ASCEND_ANGLE_WING, ASCEND_ANGLE_NOSE)
 DESCEND_ANGLE = (DESCEND_ANGLE_WING, DESCEND_ANGLE_WING)
 TAKEOFF_SPEED = 80 #m/s
+JET_MINSPEED = 25 #m/s
+JET_MAXSPEED = 100 #m/s
 # 1. Lift (N) >= GY (N)
 # KG/N
 # accelateratie = N-AR/KG
@@ -34,7 +38,7 @@ TAKEOFF_SPEED = 80 #m/s
 # Lift (N) == GY (N)
 
 class Flight():
-    def __init__(self, plane, wind, distance, air_density, C=0.012, dt=1) -> None:
+    def __init__(self, plane, wind, jet_stream, temperature, distance, air_density, C=0.012, dt=1) -> None:
         self.position = 0
         self.positionLst = [self.position]
         self.height = 0
@@ -61,7 +65,8 @@ class Flight():
         self.dt = dt
         self.drag_cov = C
         self.wind = wind
-    
+        self.jet_stream = jet_stream
+        self.temperature = temperature
     
     def calc_air_ressistance(self):
         force = 1/2 * self.air_density * ((self.velocity+self.wind.speed) ** 2) * self.plane.wing_span * self.drag_cov
@@ -71,7 +76,7 @@ class Flight():
     
     def calc_lift(self, angle):
         C = 2 * math.pi * angle #angle in radians
-        lift = 1/2 * C * self.air_density * (self.velocity**2) * self.plane.wing_span
+        lift = 1/2 * C * self.air_density * ((self.velocity+self.wind.speed)**2) * self.plane.wing_span
 
         return lift
 
@@ -118,7 +123,6 @@ class Flight():
         self.massLst.append(self.mass)
         
 
-
     def takeoff(self):
         while self.forward_velocity <= self.plane.takeoff_speed:
             #calculate values
@@ -137,7 +141,8 @@ class Flight():
         # print("Plane has taken off!")
 
         return True
-            
+
+
     def ascend(self, angles):
         angle_nose = angles[0]
         angle_wings = angles[1]
@@ -170,17 +175,20 @@ class Flight():
         # print("Ladies and gentlemen we've reached our cruising speed, you may now take off your seatbelts.")
         return True
 
+
     def cruising_flight(self):
         self.upward_velocity = 0
         self.forward_velocity = self.velocity
+        self.wind.speed = 0
         while self.position < self.distance:
             self.time += self.dt
+            self.jet_stream.calc_speed(self.temperature.temp)
             thrust = self.calc_air_ressistance()
             fuel_used = thrust * self.plane.power
             self.total_fuel_used += fuel_used
             self.mass -= fuel_used
-            self.position += self.forward_velocity
-            self.wind.change_wind()
+            self.position += self.forward_velocity-self.jet_stream.speed
+            self.temperature.change_temp()
             self.update_lsts()
         
 
@@ -208,6 +216,8 @@ class Flight():
         # print(self.height)
         # print("We reached ground level, BRACE FOR IMPACT")
         return True
+
+
     def landing(self):
         self.upward_velocity = 0
         while self.forward_velocity > 0:
@@ -222,6 +232,7 @@ class Flight():
         
         return True
         
+
     def run_sim(self, ASCEND_ANGLE, DESCEND_ANGLE):
         self.takeoff()
         self.ascend(ASCEND_ANGLE)
@@ -230,46 +241,104 @@ class Flight():
         self.landing()
         # print(self.time)
 
-boeing = Plane(max_velocity=SPEED, empty_weight=ZERO_FUEL, fuel=FUEL, max_height=MAX_HEIGHT, power=MOTOR_POWER, wing_span=WING_SPAN, thrust=THRUST, takeoff_speed=TAKEOFF_SPEED)
 
-usedLst = []
-wind = Wind(-1)
-flight_sim = Flight(boeing, wind, DISTANCE, AIR_DENSITTY)
-flight_sim.run_sim(ASCEND_ANGLE, DESCEND_ANGLE)
-fuel_no_wind = flight_sim.total_fuel_used
-for i in range(13):
-    print(i)
-    used = 0
-    for j in range(10):
-        wind = Wind(i)
-        #timeLst, positionLst, height_list, fuelLst, forward_accelerationLst, forward_velocityLst, upward_accelerationLst, upward_velocityLst = flight(boeing, DISTANCE, AIR_DENSITTY)
-        flight_sim = Flight(boeing, wind, DISTANCE, AIR_DENSITTY)
-        flight_sim.run_sim(ASCEND_ANGLE, DESCEND_ANGLE)
-        #plt.plot(flight_sim.timeLst, flight_sim.fuelLst, label=f"Windkracht: {i}")
-        used += flight_sim.total_fuel_used
-    mean = used/10
-    usedLst.append(mean)
-
-diff_0 = []
-for i in range(13):
-    average_fuel = usedLst[i]
-    difference = (average_fuel/fuel_no_wind-1)*100
-    diff_0.append(difference)
-bars = [f"Windkracht: {i}" for i in range(13)]
-plt.bar([i for i in range(13)], diff_0)
-plt.xticks([i for i in range(13)], bars)
-plt.show()
+# def test_wind(plane):
 
 
-# print(timeLst)
-# print("------------------------------------------")
-# print(height_list)
-# print("------------------------------------------")
-# print(fuelLst)
-# print("------------------------------------------")
-# print(positionLst)
-# # print("------------------------------------------")
-# plt.plot(flight_sim.timeLst, flight_sim.fuelLst)
-# plt.show()
-# plt.plot(timeLst[0:50],forward_velocityLst[:50])
-# plt.show()
+
+
+def main():
+    # BOEING 787-9
+    DISTANCE = 5862.03*1000  # m (distance Amsterdam - New York)
+    SPEED = 900/3.6  # m/s
+    FUEL = 126370
+    ZERO_FUEL = 181400  # KG
+    FUEL = 80000  # KG
+    MAX_HEIGHT = 13100  # m
+    MOTOR_POWER = 7.7/(1000*1000)  # g/N*S
+    WING_SPAN = 360.5  # m2
+    C = 0.012  # air drag coefficent of subsonic transport airplane.
+    AIR_DENSITTY = 1.225  # kg/m^3
+    # IMPULSE = 13200
+    THRUST = 360.4 * 1000 * 2 #N/s
+    ASCEND_ANGLE_NOSE = math.radians(15)
+    DESCEND_ANGLE_NOSE = math.radians(-3)
+    ASCEND_ANGLE_WING = math.radians(25)
+    DESCEND_ANGLE_WING = math.radians(-25)
+    ASCEND_ANGLE = (ASCEND_ANGLE_WING, ASCEND_ANGLE_NOSE)
+    DESCEND_ANGLE = (DESCEND_ANGLE_WING, DESCEND_ANGLE_WING)
+    TAKEOFF_SPEED = 80 #m/s
+    JET_MINSPEED = 25 #m/s
+    JET_MAXSPEED = 100 #m/s
+    LATITUDE = math.radians(50)
+    AVG_TEMPERATURE = 221 #K
+    boeing = Plane(max_velocity=SPEED, empty_weight=ZERO_FUEL, fuel=FUEL, max_height=MAX_HEIGHT, power=MOTOR_POWER, wing_span=WING_SPAN, thrust=THRUST, takeoff_speed=TAKEOFF_SPEED)
+
+    usedLst = []
+    wind = Wind(-1)
+    # wind = Wind(-1)
+    # jet_stream = Jet_stream(0, JET_MINSPEED, JET_MAXSPEED)
+    for i in range(1,10):
+        print(i)
+        used = []
+        for j in range(1000):
+            temperature = Temperature(i, 0, AVG_TEMPERATURE)
+            jet_stream = Jet_stream(LATITUDE, MAX_HEIGHT)
+            flight_sim = Flight(boeing, wind, jet_stream, temperature, DISTANCE, AIR_DENSITTY)
+            flight_sim.run_sim(ASCEND_ANGLE, DESCEND_ANGLE)
+            #plt.plot(flight_sim.timeLst, flight_sim.fuelLst, label=f"Windkracht: {i}")
+            used.append(flight_sim.total_fuel_used)
+        usedLst.append(used)
+
+
+
+    fig, axs = plt.subplots(2, figsize=(25,50))
+    bars = [f"Scale: {i}" for i in range(1,10)]
+    # print(usedLst)
+    vp_1 = axs[0].violinplot(usedLst, [i*2 for i in range(9)], widths=2, showmeans=True, showmedians=False, showextrema=False)
+    axs[0].set_xticks([i*2 for i in range(9)])
+    axs[0].set_xticklabels(bars)
+    axs[0].title.set_text("Effect of standard deviantion of temperature on fuel use")
+    # plt.violinplot([i for i in range(10)], usedLst)
+    # plt.xticks([i for i in range(10)], bars)
+    
+    usedLst = []
+    for i in range(1,10):
+        print(i)
+        used = []
+        for j in range(1000):
+            temperature = Temperature(5, i/100, AVG_TEMPERATURE)
+            jet_stream = Jet_stream(LATITUDE, MAX_HEIGHT)
+            flight_sim = Flight(boeing, wind, jet_stream, temperature, DISTANCE, AIR_DENSITTY)
+            flight_sim.run_sim(ASCEND_ANGLE, DESCEND_ANGLE)
+            used.append(flight_sim.total_fuel_used)
+        usedLst.append(used)
+    
+    bars = [f"Change: {i}" for i in range(1,10)]
+    vp_2 = axs[1].violinplot(usedLst, [i*2 for i in range(9)], widths=2, showmeans=True, showmedians=False, showextrema=False)
+    axs[1].set_xticks([i*2 for i in range(9)])
+    axs[1].set_xticklabels(bars)
+    axs[1].title.set_text("Effect of more random change of temperature on fuel use") 
+    plt.show()
+
+    # print(timeLst)
+    # print("------------------------------------------")
+    # print(height_list)
+    # print("------------------------------------------")
+    # print(fuelLst)
+    # print("------------------------------------------")
+    # print(positionLst)
+    # # print("------------------------------------------")
+    # wind = Wind(4)
+    # flight_sim = Flight(boeing, wind, DISTANCE, AIR_DENSITTY)
+    # flight_sim.run_sim(ASCEND_ANGLE, DESCEND_ANGLE)
+    # plt.plot(flight_sim.timeLst, flight_sim.fuelLst)
+    # plt.show()
+    # plt.plot(timeLst[0:50],forward_velocityLst[:50])
+    # plt.show()
+
+    return True
+
+if __name__ == "__main__":
+    main()
+
