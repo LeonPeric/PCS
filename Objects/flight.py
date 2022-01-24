@@ -42,6 +42,8 @@ class Flight():
         self.accelerationLst = [self.acceleration]
         self.fuelLst = [self.total_fuel_used]
         self.massLst = [self.mass]
+        self.windLst = [0]
+        self.jetLst = [0]
 
     
     def calc_air_ressistance(self):
@@ -161,6 +163,8 @@ class Flight():
         self.fuelLst.append(self.total_fuel_used)
         self.massLst.append(self.mass)
         self.accelerationLst.append(self.acceleration)
+        self.jetLst.append(self.jet_stream.speed)
+        self.windLst.append(self.wind.speed)
         
 
     def takeoff(self):

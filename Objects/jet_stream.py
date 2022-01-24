@@ -26,6 +26,7 @@ class Jet_stream():
         self.latitude = latitude
         self.height = height 
         self.constant = (self.g * self.c * self.b) * self.height * (1 - (self.height) /( 2 * self.ZT)) * (math.cos(self.latitude) ** 2) * (math.sin(self.latitude) ** 2)/1000
+        self.speed = 0
 
     def calc_speed(self, temperature):
         self.speed =  self.constant / (self.Omega * temperature) 

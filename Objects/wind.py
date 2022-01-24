@@ -12,6 +12,7 @@ class Wind():
             self.minspeed = 0
         self.speed = random.uniform(self.minspeed, self.maxspeed)
         self.max_acc = 0.1 * (self.maxspeed-self.minspeed)
+        self.speed = 0
     
     def change_wind(self):
         if self.speed >= self.maxspeed:
