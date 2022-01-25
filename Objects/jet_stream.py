@@ -17,6 +17,16 @@ import math
 
 
 class Jet_stream():
+    """
+    Calculates the speed of the jet stream
+
+    Attributes:
+        latitude: float
+            latitude of where the plane is flying
+        height: float
+            altitude of the plane in m
+    
+    """
     def __init__(self, latitude, height) -> None:
         self.Omega = 1.456 * (10 ** (-4))
         self.g = 9.81
