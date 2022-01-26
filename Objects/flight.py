@@ -78,7 +78,18 @@ class Flight():
         thrust = math.sqrt(thrust_upwards ** 2 + thrust_forward ** 2)
 
         return thrust
-        
+    
+    def alt_calc_constant_ascend(self, angle):
+        gravity = self.mass * 9.81
+        lift = -self.calc_lift(angle)
+        drag = self.calc_air_ressistance()
+        drag_forward = drag * math.cos(angle)
+        drag_upward = drag * math.sin(angle)
+        thrust_forward = drag_forward
+        thrust_upwards = drag_upward + gravity + lift
+        thrust = math.sqrt(thrust_upwards ** 2 + thrust_forward ** 2)
+
+        return thrust 
 
     def update_lsts(self):
         self.velocityLst.append(self.velocity)
