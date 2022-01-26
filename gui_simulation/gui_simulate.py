@@ -58,8 +58,8 @@ bottom = screen.get_height() - 100
 
 # get the height map for the plane
 boeing = Plane(max_velocity=SPEED, empty_weight=ZERO_FUEL, fuel=FUEL, max_height=MAX_HEIGHT, power=MOTOR_POWER, wing_span=WING_SPAN, thrust=THRUST, takeoff_speed=TAKEOFF_SPEED)
-wind = Wind(-1, dt)
-temperature = Temperature(0, 0, AVG_TEMPERATURE, dt)
+wind = Wind(4, dt)
+temperature = Temperature(2, 0.1, AVG_TEMPERATURE, dt)
 jet_stream = Jet_stream(LATITUDE, MAX_HEIGHT)
 flight_sim = Flight(boeing, wind, jet_stream, temperature, DISTANCE, AIR_DENSITTY)
 flight_sim.run_sim(ASCEND_ANGLE_NOSE, DESCEND_ANGLE)
@@ -122,9 +122,9 @@ def simulate_plane(height_map, screen, airplane_img, airplane_rect):
         time_textpos.update(0, 60, 100, 50)
 
         if angled:
-            wind_jetstream_text = font.render(f"The wind speed is currently: {flight_sim.windLst[i]}", 1, (10, 10, 10))
+            wind_jetstream_text = font.render(f"The wind speed is currently: {round(flight_sim.windLst[i], 2)}", 1, (10, 10, 10))
         else:
-            wind_jetstream_text = font.render(f"The jet stream is currently: {flight_sim.jetLst[i]}", 1, (10, 10, 10))
+            wind_jetstream_text = font.render(f"The jet stream is currently: {round(flight_sim.jetLst[i], 2)}", 1, (10, 10, 10))
         wind_jetstream_textpos = wind_jetstream_text.get_rect()
         wind_jetstream_textpos.update(375, 60, 100, 50)
 

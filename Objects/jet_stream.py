@@ -33,4 +33,4 @@ class Jet_stream():
             temperature: float
                 Current temperature in kelvin
         """
-        self.speed =  self.constant / (self.Omega * temperature) 
+        self.speed = self.constant / (self.Omega * temperature) 

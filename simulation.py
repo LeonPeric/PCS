@@ -1,7 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import math
-import random
 from Objects.plane import Plane
 from Objects.wind import Wind
 from Objects.jet_stream import Jet_stream
