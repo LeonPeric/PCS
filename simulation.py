@@ -1,4 +1,3 @@
-import numpy as np
 import matplotlib.pyplot as plt
 import math
 from Objects.plane import Plane
@@ -8,6 +7,7 @@ from Objects.temperature import Temperature
 from Objects.flight import Flight
 import pickle
 # def test_wind(plane):
+
 
 def make_plots():
     DISTANCE = 5862.03*1000  # m (distance Amsterdam - New York)
@@ -21,25 +21,26 @@ def make_plots():
     C = 0.012  # air drag coefficent of subsonic transport airplane.
     AIR_DENSITTY = 1.225  # kg/m^3
     # IMPULSE = 13200
-    THRUST = 360.4 * 1000 * 2 #N/s
+    THRUST = 360.4 * 1000 * 2  # N/s
     ASCEND_ANGLE_NOSE = math.radians(15)
     DESCEND_ANGLE_NOSE = math.radians(-3)
     ASCEND_ANGLE_WING = math.radians(25)
     DESCEND_ANGLE_WING = math.radians(-25)
     ASCEND_ANGLE = (ASCEND_ANGLE_WING, ASCEND_ANGLE_NOSE)
     DESCEND_ANGLE = (DESCEND_ANGLE_WING, DESCEND_ANGLE_WING)
-    TAKEOFF_SPEED = 100 #m/s
-    JET_MINSPEED = 25 #m/s
-    JET_MAXSPEED = 100 #m/s
+    TAKEOFF_SPEED = 100  # m/s
+    JET_MINSPEED = 25  # m/s
+    JET_MAXSPEED = 100  # m/s
     LATITUDE = math.radians(50)
-    AVG_TEMPERATURE = 221 #K
+    AVG_TEMPERATURE = 221  # K
     dt = 1
-    boeing = Plane(max_velocity=SPEED, empty_weight=ZERO_FUEL, fuel=FUEL, max_height=MAX_HEIGHT, power=MOTOR_POWER, wing_span=WING_SPAN, thrust=THRUST, takeoff_speed=TAKEOFF_SPEED)
-    wind = Wind(3, dt)
+    boeing = Plane(max_velocity=SPEED, empty_weight=ZERO_FUEL, fuel=FUEL, max_height=MAX_HEIGHT,
+                   power=MOTOR_POWER, wing_span=WING_SPAN, thrust=THRUST, takeoff_speed=TAKEOFF_SPEED)
+    wind = Wind(-1, dt)
     temperature = Temperature(0, 0, AVG_TEMPERATURE, dt)
-    jet_stream = Jet_stream(LATITUDE, MAX_HEIGHT)
+    jet_stream = Jet_stream(5/1000, 60, 1)
     flight_sim = Flight(boeing, wind, jet_stream, temperature, DISTANCE, AIR_DENSITTY)
-    flight_sim.run_sim(ASCEND_ANGLE_NOSE, DESCEND_ANGLE)
+    flight_sim.run_sim(ASCEND_ANGLE_NOSE)
 
     # fuel-time
     fig, ax = plt.subplots(1)
@@ -53,90 +54,66 @@ def make_plots():
     # plt.violinplot([i for i in range(10)], usedLst)
     # plt.xticks([i for i in range(10)], bars)
 
-    #wind_speed
-    path = "plots/1000_sims/"
-    usedLst = []
-    usedLst_diff_mean = []
-    usedLst_diff = []
-    wind = Wind(-1,dt)
-    flight_sim = Flight(boeing, wind, jet_stream, temperature, DISTANCE, AIR_DENSITTY)
-    flight_sim.run_sim(ASCEND_ANGLE_NOSE, DESCEND_ANGLE)
-    zero_fuel_use = flight_sim.total_fuel_used
-    for i in range(0,7):
-        used = []
-        used_diff = []
-        print(i)
-        for j in range(1000):
-            wind = Wind(i, dt)
-            flight_sim = Flight(boeing, wind, jet_stream, temperature, DISTANCE, AIR_DENSITTY)
-            flight_sim.run_sim(ASCEND_ANGLE_NOSE, DESCEND_ANGLE)
-            used.append(flight_sim.total_fuel_used)
-            used_diff.append(flight_sim.total_fuel_used - zero_fuel_use)
-        usedLst.append(used)
-        usedLst_diff.append(used_diff)
-        usedLst_diff_mean.append(np.mean(used_diff))
-    
-    fig, ax = plt.subplots(1, figsize = (25,10))
-    bars = [f"WP: {i}" for i in range(0,7)]
-    # print(usedLst)
-    vp_1 = ax.violinplot(usedLst, [i*2 for i in range(7)], widths=2, showmeans=True, showmedians=False, showextrema=False)
-    ax.set_xticks([i*2 for i in range(7)])
-    ax.set_xticklabels(bars)
-    ax.title.set_text("Effect of wind on fuel usage")
-    ax.set_xlabel("Wind power on the scale of Beaufort")
-    ax.set_ylabel("Fuel ussage in kg")
-    fig.savefig(path+"fuel_use_wind_wf7.png")
-    plt.close(fig)
-    
-    #wind speed against average
-
-    # bars = [f"WP: {i}" for i in range(0,7)]
+    # wind_speed
+    # path = "plots/1000_sims/"
     # usedLst = []
+    # usedLst_diff_mean = []
+    # usedLst_diff = []
+    # wind = Wind(-1,dt)
+    # flight_sim = Flight(boeing, wind, jet_stream, temperature, DISTANCE, AIR_DENSITTY)
+    # flight_sim.run_sim(ASCEND_ANGLE_NOSE, DESCEND_ANGLE)
+    # zero_fuel_use = flight_sim.total_fuel_used
     # for i in range(0,7):
     #     used = []
+    #     used_diff = []
     #     print(i)
-    #     for j in range(100):
+    #     for j in range(1000):
     #         wind = Wind(i, dt)
     #         flight_sim = Flight(boeing, wind, jet_stream, temperature, DISTANCE, AIR_DENSITTY)
     #         flight_sim.run_sim(ASCEND_ANGLE_NOSE, DESCEND_ANGLE)
     #         used.append(flight_sim.total_fuel_used)
-    #     mean_used = np.mean(used)
-    #     usedLst.append(mean_used-zero_fuel_use)
-    fig, ax = plt.subplots(1, figsize = (25,10))
-    plot = ax.bar([i for i in range(7)], usedLst_diff_mean)
-    ax.title.set_text("Effect of wind on fuel usage")
-    ax.set_xlabel("Wind power on the scale of Beaufort")
-    ax.set_ylabel("Fuel ussage in kg")
-    fig.savefig(path+"fuel_use_wind_wf_7_diff_mean.png")
-    plt.close(fig)
+    #         used_diff.append(flight_sim.total_fuel_used - zero_fuel_use)
+    #     usedLst.append(used)
+    #     usedLst_diff.append(used_diff)
+    #     usedLst_diff_mean.append(np.mean(used_diff))
+
+    # fig, ax = plt.subplots(1, figsize = (25,10))
+    # bars = [f"WP: {i}" for i in range(0,7)]
+    # # print(usedLst)
+    # vp_1 = ax.violinplot(usedLst, [i*2 for i in range(7)], widths=2, showmeans=True, showmedians=False, showextrema=False)
+    # ax.set_xticks([i*2 for i in range(7)])
+    # ax.set_xticklabels(bars)
+    # ax.title.set_text("Effect of wind on fuel usage")
+    # ax.set_xlabel("Wind power on the scale of Beaufort")
+    # ax.set_ylabel("Fuel ussage in kg")
+    # fig.savefig(path+"fuel_use_wind_wf7.png")
+    # plt.close(fig)
+
+    # wind speed against average
+    # fig, ax = plt.subplots(1, figsize = (25,10))
+    # plot = ax.bar([i for i in range(7)], usedLst_diff_mean)
+    # ax.title.set_text("Effect of wind on fuel usage")
+    # ax.set_xlabel("Wind power on the scale of Beaufort")
+    # ax.set_ylabel("Fuel ussage in kg")
+    # fig.savefig(path+"fuel_use_wind_wf_7_diff_mean.png")
+    # plt.close(fig)
 
     # wind_speed
-    # usedLst = []
-    # for i in range(0,7):
-    #     used = []
-    #     print(i)
-    #     for j in range(100):
-    #         wind = Wind(i, dt)
-    #         flight_sim = Flight(boeing, wind, jet_stream, temperature, DISTANCE, AIR_DENSITTY)
-    #         flight_sim.run_sim(ASCEND_ANGLE_NOSE, DESCEND_ANGLE)
-    #         used.append(flight_sim.total_fuel_used-zero_fuel_use)
-    #     usedLst.append(used)
-    
-    fig, ax = plt.subplots(1, figsize = (25,10))
-    bars = [f"WP: {i}" for i in range(0,7)]
-    # print(usedLst)
-    vp_1 = ax.violinplot(usedLst_diff, [i*2 for i in range(7)], widths=2, showmeans=True, showmedians=False, showextrema=False)
-    ax.set_xticks([i*2 for i in range(7)])
-    ax.set_xticklabels(bars)
-    ax.title.set_text("Effect of wind on fuel usage")
-    ax.set_xlabel("Wind power on the scale of Beaufort")
-    ax.set_ylabel("Fuel ussage in kg")
-    fig.savefig(path + "fuel_use_wind_wf_7_diff.png")
-    plt.close(fig)
+    # fig, ax = plt.subplots(1, figsize = (25,10))
+    # bars = [f"WP: {i}" for i in range(0,7)]
+    # # print(usedLst)
+    # vp_1 = ax.violinplot(usedLst_diff, [i*2 for i in range(7)], widths=2, showmeans=True, showmedians=False, showextrema=False)
+    # ax.set_xticks([i*2 for i in range(7)])
+    # ax.set_xticklabels(bars)
+    # ax.title.set_text("Effect of wind on fuel usage")
+    # ax.set_xlabel("Wind power on the scale of Beaufort")
+    # ax.set_ylabel("Fuel ussage in kg")
+    # fig.savefig(path + "fuel_use_wind_wf_7_diff.png")
+    # plt.close(fig)
 
-    with open(path+'used.pkl', 'wb') as f:
-        pickle.dump(usedLst, f)
-    # #temperature scale
+    # with open(path+'used.pkl', 'wb') as f:
+    #     pickle.dump(usedLst, f)
+    # temperature scale
     # wind = Wind(-1, dt)
     # usedLst = []
     # for i in range(10):
@@ -145,14 +122,14 @@ def make_plots():
     #     for j in range(1000):
     #         temperature = Temperature(i, 0, AVG_TEMPERATURE, dt)
     #         flight_sim = Flight(boeing, wind, jet_stream, temperature, DISTANCE, AIR_DENSITTY)
-    #         flight_sim.run_sim(ASCEND_ANGLE_NOSE, DESCEND_ANGLE)
+    #         flight_sim.run_sim(ASCEND_ANGLE_NOSE)
     #         used.append(flight_sim.total_fuel_used)
     #     usedLst.append(used)
-    
-    # fig, ax = plt.subplots(1, figsize = (25,10))
+
+    # fig, ax = plt.subplots(1, figsize=(25, 10))
     # bars = [f"Scale: {i}" for i in range(10)]
     # # print(usedLst)
-    # vp_1 = ax.violinplot(usedLst, [i*2 for i in range(10)], widths=2, showmeans=True, showmedians=False, showextrema=False)
+    # ax.violinplot(usedLst, [i*2 for i in range(10)], widths=2, showmeans=True, showmedians=False, showextrema=False)
     # ax.set_xticks([i*2 for i in range(10)])
     # ax.set_xticklabels(bars)
     # ax.title.set_text("Effect of temprature range/jet stream on fuel ussage")
@@ -161,7 +138,10 @@ def make_plots():
     # fig.savefig("plots/fuel_use_temp_scale.png")
     # plt.close(fig)
 
-    #temperature change
+    # with open('used_scale_temp.pkl', 'wb') as f:
+    #     pickle.dump(usedLst, f)
+
+    # # temperature change
     # usedLst = []
     # for i in range(10):
     #     used = []
@@ -169,14 +149,14 @@ def make_plots():
     #     for j in range(1000):
     #         temperature = Temperature(1, i/100, AVG_TEMPERATURE, dt)
     #         flight_sim = Flight(boeing, wind, jet_stream, temperature, DISTANCE, AIR_DENSITTY)
-    #         flight_sim.run_sim(ASCEND_ANGLE_NOSE, DESCEND_ANGLE)
+    #         flight_sim.run_sim(ASCEND_ANGLE_NOSE)
     #         used.append(flight_sim.total_fuel_used)
     #     usedLst.append(used)
-    
-    # fig, ax = plt.subplots(1, figsize = (25,10))
+
+    # fig, ax = plt.subplots(1, figsize=(25, 10))
     # bars = [f"Scale: {i}" for i in range(10)]
     # # print(usedLst)
-    # vp_1 = ax.violinplot(usedLst, [i*2 for i in range(10)], widths=2, showmeans=True, showmedians=False, showextrema=False)
+    # ax.violinplot(usedLst, [i*2 for i in range(10)], widths=2, showmeans=True, showmedians=False, showextrema=False)
     # ax.set_xticks([i*2 for i in range(10)])
     # ax.set_xticklabels(bars)
     # ax.title.set_text("Effect of higher temperature changes on fuel ussage")
@@ -184,6 +164,9 @@ def make_plots():
     # ax.set_ylabel("Fuel ussage in kg")
     # fig.savefig("plots/fuel_use_temp_change.png")
     # plt.close(fig)
+    # with open('used_change_temp.pkl', 'wb') as f:
+    #     pickle.dump(usedLst, f)
+
 
 def main():
     make_plots()
@@ -212,14 +195,13 @@ def main():
     # LATITUDE = math.radians(50)
     # AVG_TEMPERATURE = 221 #K
 
-    
-    # boeing = Plane(max_velocity=SPEED, empty_weight=ZERO_FUEL, fuel=FUEL, max_height=MAX_HEIGHT, power=MOTOR_POWER, wing_span=WING_SPAN, thrust=THRUST, takeoff_speed=TAKEOFF_SPEED)
+    # boeing = Plane(max_velocity=SPEED, empty_weight=ZERO_FUEL, fuel=FUEL, max_height=MAX_HEIGHT,
+    #                power=MOTOR_POWER, wing_span=WING_SPAN, thrust=THRUST, takeoff_speed=TAKEOFF_SPEED)
     # wind = Wind(-1)
     # temperature = Temperature(0, 0, AVG_TEMPERATURE)
     # jet_stream = Jet_stream(LATITUDE, MAX_HEIGHT)
     # flight_sim = Flight(boeing, wind, jet_stream, temperature, DISTANCE, AIR_DENSITTY)
     # flight_sim.run_sim(ASCEND_ANGLE_NOSE, DESCEND_ANGLE)
-
 
     # print(flight_sim.timeLst)
     # print(flight_sim.heightLst)
@@ -242,8 +224,6 @@ def main():
     #         used.append(flight_sim.total_fuel_used)
     #     usedLst.append(used)
 
-
-
     # fig, axs = plt.subplots(2, figsize=(25,50))
     # bars = [f"Scale: {i}" for i in range(1,10)]
     # # print(usedLst)
@@ -253,7 +233,7 @@ def main():
     # axs[0].title.set_text("Effect of standard deviantion of temperature on fuel use")
     # # plt.violinplot([i for i in range(10)], usedLst)
     # # plt.xticks([i for i in range(10)], bars)
-    
+
     # usedLst = []
     # for i in range(1,10):
     #     print(i)
@@ -265,12 +245,12 @@ def main():
     #         flight_sim.run_sim(ASCEND_ANGLE, DESCEND_ANGLE)
     #         used.append(flight_sim.total_fuel_used)
     #     usedLst.append(used)
-    
+
     # bars = [f"Change: {i}" for i in range(1,10)]
     # vp_2 = axs[1].violinplot(usedLst, [i*2 for i in range(9)], widths=2, showmeans=True, showmedians=False, showextrema=False)
     # axs[1].set_xticks([i*2 for i in range(9)])
     # axs[1].set_xticklabels(bars)
-    # axs[1].title.set_text("Effect of more random change of temperature on fuel use") 
+    # axs[1].title.set_text("Effect of more random change of temperature on fuel use")
     # plt.show()
 
     # print(timeLst)
@@ -291,6 +271,6 @@ def main():
 
     return True
 
+
 if __name__ == "__main__":
     main()
-

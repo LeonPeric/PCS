@@ -2,14 +2,14 @@ class Plane():
     """
     Creates the plane object:
     Attributes:
-        max_velocity: float 
+        max_velocity: float
             Max speed of the plane in m/s
-        empty_weight: int 
-            Weight of the plane without fuel in kg   
-        fuel: int 
+        empty_weight: int
+            Weight of the plane without fuel in kg
+        fuel: int
             Amount of fuel the plane has when starting the flight in kg
         max_height: int:
-            The maximum height the plane can fly at in m   
+            The maximum height the plane can fly at in m
         power: float
             How much kg of of fuel the plane uses in kg/n*s
         wing_span: float
