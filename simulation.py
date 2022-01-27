@@ -11,7 +11,7 @@ import pickle
 # def test_wind(plane):
 
 
-def make_plots():
+def make_plots(runs=100):
     DISTANCE = 5862.03*1000  # m (distance Amsterdam - New York)
     SPEED = 900/3.6  # m/s
     FUEL = 126370
@@ -69,7 +69,7 @@ def make_plots():
     #     used = []
     #     used_diff = []
     #     print(i)
-    #     for j in range(1000):
+    #     for j in range(runs):
     #         wind = Wind(i, dt)
     #         flight_sim = Flight(boeing, wind, jet_stream, temperature, DISTANCE, AIR_DENSITTY)
     #         flight_sim.run_sim(ASCEND_ANGLE_NOSE, DESCEND_ANGLE)
@@ -121,7 +121,7 @@ def make_plots():
     # for i in range(10):
     #     used = []
     #     print(i)
-    #     for j in range(1000):
+    #     for j in range(runs):
     #         temperature = Temperature(i, 0, AVG_TEMPERATURE, dt)
     #         flight_sim = Flight(boeing, wind, jet_stream, temperature, DISTANCE, AIR_DENSITTY)
     #         flight_sim.run_sim(ASCEND_ANGLE_NOSE)
@@ -148,7 +148,7 @@ def make_plots():
     for i in range(1,10):
         used = []
         print(i)
-        for _ in range(1000):
+        for _ in range(runs):
             temperature = Temperature(1, i/100, AVG_TEMPERATURE, dt)
             jet_stream = Jet_stream(i*1000, 60, 1, scale=3)
             flight_sim = Flight(boeing, wind, jet_stream, temperature, DISTANCE, AIR_DENSITTY)
@@ -172,7 +172,7 @@ def make_plots():
     for i in range(1,16):
         used = []
         print(i)
-        for _ in range(1000):
+        for _ in range(runs):
             temperature = Temperature(1, i/100, AVG_TEMPERATURE, dt)
             jet_stream = Jet_stream(5*1000, i * 60, 1, scale=3)
             flight_sim = Flight(boeing, wind, jet_stream, temperature, DISTANCE, AIR_DENSITTY)
@@ -196,7 +196,7 @@ def make_plots():
 
 
 def main():
-    make_plots()
+    make_plots(runs=1000)
     # BOEING 787-9
     # DISTANCE = 5862.03*1000  # m (distance Amsterdam - New York)
     # SPEED = 900/3.6  # m/s
