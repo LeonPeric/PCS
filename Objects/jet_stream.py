@@ -40,9 +40,9 @@ class alt_Jet_stream():
 
 class Jet_stream():
 
-    def __init__(self, average_thickness, time_diff, dt):
-        self.min_speed = 80/3600
-        self.max_speed = 160/3600
+    def __init__(self, average_thickness, time_diff, dt, scale=1):
+        self.min_speed = 80/3.6
+        self.max_speed = 160/3.6
         self.average_speed = (self.max_speed - self.min_speed) / 2
         self.average_thickness = average_thickness
         self.time_diff = time_diff
@@ -52,19 +52,21 @@ class Jet_stream():
         self.stream_thickness = 0
         self.speed = 0
         self.dt = dt
+        self.scale = scale
+        self.time_till_next = np.random.normal(self.time_diff, self.scale * 10, size = None)
+        
 
     def check_jet_stream(self, current_distance):
         if not self.in_stream:
-            prob = self.time_since_last / (2 * self.time_diff)
-            chance = np.random.choice([0, 1], p=[1-prob, prob])
-            self.in_stream = chance
+            self.in_stream = self.time_since_last >= self.time_till_next
             if self.in_stream:
                 self.distance_start = current_distance
-                self.stream_thickness = np.random.normal(self.average_thickness, 3, size=None)
-                self.speed = np.random.normal(self.average_speed, 3 , size = None)
+                self.stream_thickness = np.random.normal(self.average_thickness, scale=self.scale * 1000, size=None)
+                self.speed = np.random.normal(self.average_speed, scale=20 - 20 / (1 + self.scale) , size = None)
             else:
                 self.time_since_last += self.dt
         else:
             self.in_stream = not (current_distance - self.distance_start >= self.stream_thickness)
             if not self.in_stream:
                 self.time_since_last = 0
+                self.time_till_next = np.random.normal(self.time_diff, scale=self.scale * 60, size = None)

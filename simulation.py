@@ -1,5 +1,7 @@
 import matplotlib.pyplot as plt
 import math
+
+from sklearn.preprocessing import scale
 from Objects.plane import Plane
 from Objects.wind import Wind
 from Objects.jet_stream import Jet_stream
@@ -85,7 +87,7 @@ def make_plots():
     # ax.set_xticklabels(bars)
     # ax.title.set_text("Effect of wind on fuel usage")
     # ax.set_xlabel("Wind power on the scale of Beaufort")
-    # ax.set_ylabel("Fuel ussage in kg")
+    # ax.set_ylabel("Fuel useage in kg")
     # fig.savefig(path+"fuel_use_wind_wf7.png")
     # plt.close(fig)
 
@@ -94,7 +96,7 @@ def make_plots():
     # plot = ax.bar([i for i in range(7)], usedLst_diff_mean)
     # ax.title.set_text("Effect of wind on fuel usage")
     # ax.set_xlabel("Wind power on the scale of Beaufort")
-    # ax.set_ylabel("Fuel ussage in kg")
+    # ax.set_ylabel("Fuel useage in kg")
     # fig.savefig(path+"fuel_use_wind_wf_7_diff_mean.png")
     # plt.close(fig)
 
@@ -107,7 +109,7 @@ def make_plots():
     # ax.set_xticklabels(bars)
     # ax.title.set_text("Effect of wind on fuel usage")
     # ax.set_xlabel("Wind power on the scale of Beaufort")
-    # ax.set_ylabel("Fuel ussage in kg")
+    # ax.set_ylabel("Fuel useage in kg")
     # fig.savefig(path + "fuel_use_wind_wf_7_diff.png")
     # plt.close(fig)
 
@@ -132,38 +134,63 @@ def make_plots():
     # ax.violinplot(usedLst, [i*2 for i in range(10)], widths=2, showmeans=True, showmedians=False, showextrema=False)
     # ax.set_xticks([i*2 for i in range(10)])
     # ax.set_xticklabels(bars)
-    # ax.title.set_text("Effect of temprature range/jet stream on fuel ussage")
+    # ax.title.set_text("Effect of temprature range/jet stream on fuel useage")
     # ax.set_xlabel("Range of temperature")
-    # ax.set_ylabel("Fuel ussage in kg")
+    # ax.set_ylabel("Fuel useage in kg")
     # fig.savefig("plots/fuel_use_temp_scale.png")
     # plt.close(fig)
 
     # with open('used_scale_temp.pkl', 'wb') as f:
     #     pickle.dump(usedLst, f)
 
-    # # temperature change
-    # usedLst = []
-    # for i in range(10):
-    #     used = []
-    #     print(i)
-    #     for j in range(1000):
-    #         temperature = Temperature(1, i/100, AVG_TEMPERATURE, dt)
-    #         flight_sim = Flight(boeing, wind, jet_stream, temperature, DISTANCE, AIR_DENSITTY)
-    #         flight_sim.run_sim(ASCEND_ANGLE_NOSE)
-    #         used.append(flight_sim.total_fuel_used)
-    #     usedLst.append(used)
+    # temperature change
+    usedLst = []
+    for i in range(1,10):
+        used = []
+        print(i)
+        for _ in range(1000):
+            temperature = Temperature(1, i/100, AVG_TEMPERATURE, dt)
+            jet_stream = Jet_stream(i*1000, 60, 1, scale=3)
+            flight_sim = Flight(boeing, wind, jet_stream, temperature, DISTANCE, AIR_DENSITTY)
+            flight_sim.run_sim(ASCEND_ANGLE_NOSE)
+            used.append(flight_sim.total_fuel_used)
+        usedLst.append(used)
 
-    # fig, ax = plt.subplots(1, figsize=(25, 10))
-    # bars = [f"Scale: {i}" for i in range(10)]
-    # # print(usedLst)
-    # ax.violinplot(usedLst, [i*2 for i in range(10)], widths=2, showmeans=True, showmedians=False, showextrema=False)
-    # ax.set_xticks([i*2 for i in range(10)])
-    # ax.set_xticklabels(bars)
-    # ax.title.set_text("Effect of higher temperature changes on fuel ussage")
-    # ax.set_xlabel("Temperature change scale")
-    # ax.set_ylabel("Fuel ussage in kg")
-    # fig.savefig("plots/fuel_use_temp_change.png")
-    # plt.close(fig)
+    fig, ax = plt.subplots(1, figsize=(25, 10))
+    bars = [f"Scale: {i}" for i in range(1,10)]
+    # print(usedLst)
+    ax.violinplot(usedLst, [i*2 for i in range(9)], widths=2, showmeans=True, showmedians=False, showextrema=False)
+    ax.set_xticks([i*2 for i in range(9)])
+    ax.set_xticklabels(bars)
+    ax.title.set_text("Effect of longer jet streams changes on fuel useage")
+    ax.set_xlabel("Jet stream lenght in km")
+    ax.set_ylabel("Fuel useage in kg")
+    fig.savefig("plots/fuel_use_stream_lenght_change.png")
+    plt.close(fig)
+
+    usedLst = []
+    for i in range(1,16):
+        used = []
+        print(i)
+        for _ in range(1000):
+            temperature = Temperature(1, i/100, AVG_TEMPERATURE, dt)
+            jet_stream = Jet_stream(5*1000, i * 60, 1, scale=3)
+            flight_sim = Flight(boeing, wind, jet_stream, temperature, DISTANCE, AIR_DENSITTY)
+            flight_sim.run_sim(ASCEND_ANGLE_NOSE)
+            used.append(flight_sim.total_fuel_used)
+        usedLst.append(used)
+
+    fig, ax = plt.subplots(1, figsize=(25, 10))
+    bars = [f"Scale: {i}" for i in range(1,16)]
+    # print(usedLst)
+    ax.violinplot(usedLst, [i*2 for i in range(15)], widths=2, showmeans=True, showmedians=False, showextrema=False)
+    ax.set_xticks([i*2 for i in range(15)])
+    ax.set_xticklabels(bars)
+    ax.title.set_text("Effect of longer time between streams changes on fuel useage")
+    ax.set_xlabel("Pause between different jet streams")
+    ax.set_ylabel("Fuel useage in kg")
+    fig.savefig("plots/fuel_use_pause_lenght_change.png")
+    plt.close(fig)
     # with open('used_change_temp.pkl', 'wb') as f:
     #     pickle.dump(usedLst, f)
 
