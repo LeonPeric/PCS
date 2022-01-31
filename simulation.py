@@ -196,45 +196,8 @@ def make_plots(runs=100):
 
 
 def main():
-    make_plots(runs=1000)
-    # BOEING 787-9
-    # DISTANCE = 5862.03*1000  # m (distance Amsterdam - New York)
-    # SPEED = 900/3.6  # m/s
-    # FUEL = 126370
-    # ZERO_FUEL = 181400  # KG
-    # FUEL = 80000  # KG
-    # MAX_HEIGHT = 13100  # m
-    # MOTOR_POWER = 7.7/(1000*1000)  # g/N*S
-    # WING_SPAN = 360.5  # m2
-    # C = 0.012  # air drag coefficent of subsonic transport airplane.
-    # AIR_DENSITTY = 1.225  # kg/m^3
-    # # IMPULSE = 13200
-    # THRUST = 360.4 * 1000 * 2 #N/s
-    # ASCEND_ANGLE_NOSE = math.radians(15)
-    # DESCEND_ANGLE_NOSE = math.radians(-3)
-    # ASCEND_ANGLE_WING = math.radians(25)
-    # DESCEND_ANGLE_WING = math.radians(-25)
-    # ASCEND_ANGLE = (ASCEND_ANGLE_WING, ASCEND_ANGLE_NOSE)
-    # DESCEND_ANGLE = (DESCEND_ANGLE_WING, DESCEND_ANGLE_WING)
-    # TAKEOFF_SPEED = 100 #m/s
-    # JET_MINSPEED = 25 #m/s
-    # JET_MAXSPEED = 100 #m/s
-    # LATITUDE = math.radians(50)
-    # AVG_TEMPERATURE = 221 #K
+    make_plots(runs=5000)
 
-    # boeing = Plane(max_velocity=SPEED, empty_weight=ZERO_FUEL, fuel=FUEL, max_height=MAX_HEIGHT,
-    #                power=MOTOR_POWER, wing_span=WING_SPAN, thrust=THRUST, takeoff_speed=TAKEOFF_SPEED)
-    # wind = Wind(-1)
-    # temperature = Temperature(0, 0, AVG_TEMPERATURE)
-    # jet_stream = Jet_stream(LATITUDE, MAX_HEIGHT)
-    # flight_sim = Flight(boeing, wind, jet_stream, temperature, DISTANCE, AIR_DENSITTY)
-    # flight_sim.run_sim(ASCEND_ANGLE_NOSE, DESCEND_ANGLE)
-
-    # print(flight_sim.timeLst)
-    # print(flight_sim.heightLst)
-    # print(flight_sim.positionLst)
-    # plt.plot(flight_sim.timeLst, flight_sim.upward_velocityLst)
-    # plt.show()
     # usedLst = []
     # wind = Wind(-1)
     # # wind = Wind(-1)
