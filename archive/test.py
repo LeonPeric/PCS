@@ -5,15 +5,15 @@ import matplotlib.pyplot as plt
 with open('used.pkl', 'rb') as f:
     test = pickle.load(f)
 
-fig, ax = plt.subplots(1, figsize = (25,10))
+fig, ax = plt.subplots(1, figsize=(25, 10))
 
 # usedLst = np.array(test)
 # print(usedLst.shape)
-usedLst = list(np.array(test)[:,0:1000])
+usedLst = list(np.array(test)[:, 0:1000])
 # usedLst = test
 # print(usedLst.shape)
 # print(len(usedLst))
-bars = [f"WP: {i+1}" for i in range(0,7)]
+bars = [f"WP: {i+1}" for i in range(0, 7)]
 # print(usedLst)
 
 print(len(usedLst))

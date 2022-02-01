@@ -16,9 +16,6 @@ class Flight():
         jet_stream: object
             the jet stream object created by jet_stream.py
 
-        tempeature: object
-            the temperature object created by temperature.py
-
         distance: int
             distance of the flight in meters
 
@@ -66,7 +63,7 @@ class Flight():
         run_sim(ASCEND_ANGLE):
             Runs the simulation
     """
-    def __init__(self, plane, wind, jet_stream, temperature, distance, air_density, C=0.012, dt=1) -> None:
+    def __init__(self, plane, wind, jet_stream, distance, air_density, C=0.012, dt=1) -> None:
         self.mass = plane.weight
         self.plane = plane
         self.distance = distance
@@ -75,7 +72,6 @@ class Flight():
         self.drag_cov = C
         self.wind = wind
         self.jet_stream = jet_stream
-        self.temperature = temperature
 
         self.position = 0
         self.height = 0
@@ -87,8 +83,6 @@ class Flight():
         self.upward_acceleration = 0
         self.acceleration = 0
         self.total_fuel_used = 0
-        self.force_angle = 0
-        self.velocity_anlge = 0
 
         self.positionLst = [self.position]
         self.heightLst = [self.height]
@@ -118,9 +112,9 @@ class Flight():
 
         Attributes:
             angle: float
-                Current angle of the plane
+                Current angle of the plane in radians
         """
-        C = 2 * math.pi * angle  # angle in radians
+        C = 2 * math.pi * angle
         lift = 1/2 * C * self.air_density * ((self.velocity+self.wind.speed)**2) * self.plane.wing_span
 
         return lift
@@ -131,8 +125,10 @@ class Flight():
 
         Attributes:
             angle: float
-                Current angle of the plane
+                Current angle of the plane in radians
         """
+
+        # 9.81 because of gravity
         gravity = -self.mass * 9.81
         lift = self.calc_lift(angle)
         drag = self.calc_air_ressistance()
@@ -154,6 +150,7 @@ class Flight():
             angle: float
                 Current angle of the plane
         """
+        # 9.81 because of gravity
         gravity = self.mass * 9.81
         lift = -self.calc_lift(angle)
         drag = self.calc_air_ressistance()
@@ -175,6 +172,7 @@ class Flight():
             angle: float
                 Current angle of the plane
         """
+        # 9.81 because of gravity
         gravity = self.mass * 9.81
         lift = -self.calc_lift(angle)
         drag = self.calc_air_ressistance()
@@ -182,7 +180,7 @@ class Flight():
         drag_upward = drag * math.sin(angle)
         thrust_forward = drag_forward
         thrust_upwards = drag_upward + gravity + lift
-        thrust = math.sqrt(thrust_upwards ** 2 + thrust_forward ** 2)
+        thrust = math.sqrt(thrust_upwards**2 + thrust_forward**2)
 
         return thrust
 
@@ -261,7 +259,6 @@ class Flight():
         self.wind.speed = 0
         while self.position < self.distance:
             self.time += self.dt
-            # self.jet_stream.calc_speed(self.temperature.temp)
             thrust = self.calc_air_ressistance()
             fuel_used = thrust * self.plane.power * self.dt
             self.total_fuel_used += fuel_used
@@ -270,13 +267,15 @@ class Flight():
                 self.position += (self.forward_velocity-self.jet_stream.speed) * self.dt
             else:
                 self.position += self.forward_velocity * self.dt
-            # self.temperature.change_temp()
             self.jet_stream.check_jet_stream(self.position)
             self.update_lsts()
 
     def descend(self):
         """
-        Runs the descending phase of the simulation
+        Runs the descending phase of the simulation.
+
+        NOTE: this is guesswork, this is not based on real data.
+        Future work could improve this project mostly by working on this phase.
         """
         self.upward_velocity = -7
         self.forward_velocity = 150
@@ -297,6 +296,11 @@ class Flight():
     def landing(self):
         """
         Runs the landing phase of the simulation
+
+        NOTE: this is guesswork, this is not based on real data.
+        Future work could improve this project mostly by working on this phase.
+        But because no fuel is used in the landing phase of a flight did this not
+        impact the result of the research.
         """
         self.upward_velocity = 0
         while self.forward_velocity > 0:

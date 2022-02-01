@@ -1,0 +1,7 @@
+- Optimale line fitten
+- Data ophaal bestandje
+- Code mooi afmaken
+- Readme bestand
+- Source bestand met bronnen
+- Check of code echt goed werkt als download van github en random locatie zet, ook op linux testen
+- Assertions, tests toevoegen
