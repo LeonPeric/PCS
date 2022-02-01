@@ -21,9 +21,9 @@ def make_plots(runs=100):
     jet_stream = Jet_stream(0, 0, 0)
     flight_sim = Flight(boeing, wind, jet_stream, Constants.DISTANCE, Constants.AIR_DENSITTY)
     flight_sim.run_sim(Constants.ANGLE)
+
     # fuel-time with no random circumstances
     fig, ax = plt.subplots(1)
-    # print(usedLst)
     ax.plot(flight_sim.timeLst, flight_sim.fuelLst)
     ax.set_xlabel("Time in seconds")
     ax.set_ylabel("Fuel use in kg")
@@ -32,7 +32,7 @@ def make_plots(runs=100):
     plt.close(fig)
 
     # wind_speed
-    path = os.path.join("simulations", "wind")
+    path = os.path.join("simulations", "fitting", "wind")
     usedLst = []
 
     # we make use of 7, because above this it is to dangerous to fly anyway.
@@ -46,18 +46,19 @@ def make_plots(runs=100):
             used.append(flight_sim.total_fuel_used)
         usedLst.append(used)
 
+    # save the data to a local file for later usage.
     with open(os.path.join(path, "wind_data.pkl"), "wb") as f:
         pickle.dump(usedLst, f)
 
-    # 3 because a third order polynomial was a good fit for our data.
-    Estimate(os.path.join(path, "wind_data.pkl"), 3, 0, os.path.join(path, "wind_plot"),
-             "Fuel usage against wind power", "Wind power on the scale of Beaufort", "Fuel usage in kg").plot_estimation()
+    # from a second order polynomial the fit seemed good.
+    Estimate(os.path.join(path, "wind_data.pkl"), 0, 2, 0, os.path.join(path, "wind_plot"),
+             "Fuel usage against wind force", "Wind force on the scale of Beaufort", "Fuel usage in kg").plot_estimation()
 
     # reset the wind so that wind doesn't influence the jet stream simulations.
     wind = Wind(-1, dt)
 
     # jet_stream_thickness
-    path = os.path.join("simulations", "jetstream")
+    path = os.path.join("simulations", "fitting", "jetstream")
     usedLst = []
 
     # 1, 10 because average thickness is 5 km so we want to check a few values below and above it.
@@ -74,10 +75,12 @@ def make_plots(runs=100):
             used.append(flight_sim.total_fuel_used)
         usedLst.append(used)
 
+    # save data to file.
     with open(os.path.join(path, "jet_stream_thickness_data.pkl"), "wb") as f:
         pickle.dump(usedLst, f)
 
-    Estimate(os.path.join(path, "jet_stream_thickness_data.pkl"), 3, 1, os.path.join(path, "jet_stream_thickness"),
+    # from a second order polynomial the fit seemed good.
+    Estimate(os.path.join(path, "jet_stream_thickness_data.pkl"), 0, 2, 1, os.path.join(path, "jet_stream_thickness"),
              "Fuel usage against jet stream thickness", "Jet stream thickness in km", "Fuel usage in kg").plot_estimation()
 
     # jet stream time diff
@@ -100,7 +103,8 @@ def make_plots(runs=100):
     with open(os.path.join(path, "jet_stream_time_diff_data.pkl"), "wb") as f:
         pickle.dump(usedLst, f)
 
-    Estimate(os.path.join(path, "jet_stream_time_diff_data.pkl"), 3, 1, os.path.join(path, "jet_stream_time_diff_plot"),
+    # the best fit for time diff was a fraction where the denominator is a second order polynomial
+    Estimate(os.path.join(path, "jet_stream_time_diff_data.pkl"), -2, 0, 1, os.path.join(path, "jet_stream_time_diff_plot"),
              "Fuel usage against jet stream time difference", "Jet stream time difference in minutes", "Fuel usage in kg").plot_estimation()
 
 

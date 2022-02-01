@@ -4,64 +4,64 @@ import math
 
 class Flight():
     """
-    Creates Flight object for simulation
+    Creates Flight object for simulation.
 
     Attributes:
         plane: object
-            the plane object created by the plane.py
+            the plane object created by the plane.py.
 
         wind: object
-            the wind object created by wind.py
+            the wind object created by wind.py.
 
         jet_stream: object
-            the jet stream object created by jet_stream.py
+            the jet stream object created by jet_stream.py.
 
         distance: int
-            distance of the flight in meters
+            distance of the flight in meters.
 
         air_density: int
-            the air density in kg/m^3
+            the air density in kg/m^3.
 
         C: float
             Air drag coefficient.
 
         dt: float
-            Timestep in seconds
+            Timestep in seconds.
 
     Methods:
         calc_air_ressistance():
-            Calculates the current air resistance
+            Calculates the current air resistance.
 
         calc_lift(angle):
-            Calculates the current lift force
+            Calculates the current lift force.
 
         calc_acc_ascend(angle):
-            Calculates the current acceleration of the plane while ascending
+            Calculates the current acceleration of the plane while ascending.
 
         calc_constant_ascend(angle):
             Calculates the current ascending atributes,
-            while the plane has reached max speed
+            while the plane has reached max speed.
 
         update_lsts():
             Updates all the variables used in the simulation.
 
         takeoff():
-            Runs the takeoff phase of the simulation
+            Runs the takeoff phase of the simulation.
 
         ascend(angle):
-            Runs the ascending phase of the simulation
+            Runs the ascending phase of the simulation.
 
         cruising_flight():
-            Runs the cruising phase of the simulation
+            Runs the cruising phase of the simulation.
 
         descend():
-            Runs the descending phase of the simulation
+            Runs the descending phase of the simulation.
 
         landing():
-            Runs the landing phase of the simulation
+            Runs the landing phase of the simulation.
 
         run_sim(ASCEND_ANGLE):
-            Runs the simulation
+            Runs the simulation.
     """
     def __init__(self, plane, wind, jet_stream, distance, air_density, C=0.012, dt=1) -> None:
         self.mass = plane.weight
@@ -100,7 +100,7 @@ class Flight():
 
     def calc_air_ressistance(self):
         """
-        Calculates the current air resistance
+        Calculates the current air resistance.
         """
         force = 1/2 * self.air_density * ((self.velocity+self.wind.speed) ** 2) * self.plane.wing_span * self.drag_cov
 
@@ -108,11 +108,11 @@ class Flight():
 
     def calc_lift(self, angle):
         """
-        Calculates the current lift force
+        Calculates the current lift force.
 
         Attributes:
             angle: float
-                Current angle of the plane in radians
+                Current angle of the plane in radians.
         """
         C = 2 * math.pi * angle
         lift = 1/2 * C * self.air_density * ((self.velocity+self.wind.speed)**2) * self.plane.wing_span
@@ -121,11 +121,11 @@ class Flight():
 
     def calc_acc_ascend(self, angle):
         """
-        Calculates the current acceleration of the plane while ascending
+        Calculates the current acceleration of the plane while ascending.
 
         Attributes:
             angle: float
-                Current angle of the plane in radians
+                Current angle of the plane in radians.
         """
 
         # 9.81 because of gravity
@@ -144,11 +144,11 @@ class Flight():
     def calc_constant_ascend(self, angle):
         """
         Calculates the current ascending atributes,
-        while the plane has reached max speed
+        while the plane has reached max speed.
 
         Attributes:
             angle: float
-                Current angle of the plane
+                Current angle of the plane.
         """
         # 9.81 because of gravity
         gravity = self.mass * 9.81
@@ -164,13 +164,13 @@ class Flight():
 
     def alt_calc_constant_ascend(self, angle):
         """
-        Alternate methode to calculate
+        Alternate methode to calculate.
         the current ascending atributes,
-        while the plane has reached max speed
+        while the plane has reached max speed.
 
         Attributes:
             angle: float
-                Current angle of the plane
+                Current angle of the plane.
         """
         # 9.81 because of gravity
         gravity = self.mass * 9.81
@@ -204,7 +204,7 @@ class Flight():
 
     def takeoff(self):
         """
-        Runs the take off phase of the simulation
+        Runs the take off phase of the simulation.
         """
         while self.forward_velocity <= self.plane.takeoff_speed:
             self.time += self.dt
@@ -220,11 +220,11 @@ class Flight():
 
     def ascend(self, angle):
         """
-        Runs the ascending phase of the simulation
+        Runs the ascending phase of the simulation.
 
         Attributes:
             angle: float
-                angle of the plane in radians
+                angle of the plane in radians.
         """
         while self.height < self.plane.max_height:
             self.time += self.dt
@@ -252,7 +252,7 @@ class Flight():
 
     def cruising_flight(self):
         """
-        Runs the cruising phase of the simulation
+        Runs the cruising phase of the simulation.
         """
         self.upward_velocity = 0
         self.forward_velocity = self.velocity
@@ -295,7 +295,7 @@ class Flight():
 
     def landing(self):
         """
-        Runs the landing phase of the simulation
+        Runs the landing phase of the simulation.
 
         NOTE: this is guesswork, this is not based on real data.
         Future work could improve this project mostly by working on this phase.
@@ -312,11 +312,11 @@ class Flight():
 
     def run_sim(self, ASCEND_ANGLE):
         """
-        Runs the simulation
+        Runs the simulation.
 
         Attributes:
             ASCEND_ANGLE: float
-                the ascend angle of the plane in radians
+                the ascend angle of the plane in radians.
         """
         self.takeoff()
         self.ascend(ASCEND_ANGLE)

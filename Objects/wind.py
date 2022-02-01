@@ -3,26 +3,27 @@ import random
 
 class Wind():
     """
-    Handles all the wind operations for the simulation:
+    Handles all the wind operations for the simulation.
+
     Attributes:
         Scale: int
-            Scale based on the beafort wind scale in m/s
+            Scale based on the beafort wind scale in m/s.
         dt: float
-            Timesteps in seconds
+            Timesteps in seconds.
 
     Methods:
         change_wind():
-            Changes the current wind speed
+            Changes the current wind speed.
     """
     def __init__(self, scale, dt):
         """
-        Constructs the wind object for the simulation
+        Constructs the wind object for the simulation.
 
         Parameters:
         scale: float
-            Select which Beaufort parameter to use
+            Select which Beaufort parameter to use.
         dt: float
-            Timesteps
+            Timesteps.
         """
         self.dt = dt
         scale += 1

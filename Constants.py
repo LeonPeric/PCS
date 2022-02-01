@@ -1,3 +1,7 @@
+"""
+This file contains all the variables for the specific plane that we are using, a Boeing 787-9.
+"""
+
 import math
 
 # for values see readme

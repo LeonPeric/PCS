@@ -1,23 +1,24 @@
 class Plane():
     """
-    Creates the plane object:
+    Creates the plane object
+    
     Attributes:
         max_velocity: float
-            Max speed of the plane in m/s
+            Max speed of the plane in m/s.
         empty_weight: int
-            Weight of the plane without fuel in kg
+            Weight of the plane without fuel in kg.
         fuel: int
-            Amount of fuel the plane has when starting the flight in kg
+            Amount of fuel the plane has when starting the flight in kg.
         max_height: int:
-            The maximum height the plane can fly at in m
+            The maximum height the plane can fly at in m.
         power: float
-            How much kg of of fuel the plane uses in kg/n*s
+            How much kg of of fuel the plane uses in kg/n*s.
         wing_span: float
-            Wing span of the plane in m^2
+            Wing span of the plane in m^2.
         thrust: float
-            Amount of thrust of the plane in n/s
+            Amount of thrust of the plane in n/s.
         takeoff_speed: float
-            Amount of speed required to takeoff in m/s
+            Amount of speed required to takeoff in m/s.
     """
     def __init__(self, max_velocity, empty_weight, fuel, max_height, power, wing_span, thrust, takeoff_speed) -> None:
         self.max_velocity = max_velocity

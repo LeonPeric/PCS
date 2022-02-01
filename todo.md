@@ -1,7 +1,6 @@
-- Optimale line fitten
-- Data ophaal bestandje
-- Code mooi afmaken
+- Code mooi afmaken (percentile estimation)
 - Readme bestand
 - Source bestand met bronnen
-- Check of code echt goed werkt als download van github en random locatie zet, ook op linux testen
 - Assertions, tests toevoegen
+- Een bestand met waar je alle objecten kan aanpassen (vliegtuig zelf niet) en die simulation kan runnen
+- Waarom is er een 1/x/whatever verband bij time difference

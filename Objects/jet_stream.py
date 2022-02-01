@@ -3,14 +3,15 @@ import numpy as np
 
 class Jet_stream():
     """
-    Object for all jet stream related operations in the simulation
+    Object for all jet stream related operations in the simulation.
+    
     Attributes:
         average_thickness: float
-            The average thickness of a jet stream in m
+            The average thickness of a jet stream in m.
         tine_diff: int
-            The amount of time between jet streams in s
+            The amount of time between jet streams in s.
         dt: float
-            Timestep in second
+            Timestep in second.
         scale: int
             The scale over which the values may vary from the average.
 
@@ -46,13 +47,13 @@ class Jet_stream():
 
         Attributes:
             current_distance: float
-                the current distance of the plane in m
+                the current distance of the plane in m.
         """
 
         # this is only for a blank run where no jet streams are active.
         if self.average_thickness == 0 and self.time_diff == 0:
             self.speed = 0
-        
+
         else:
             if not self.in_stream:
                 self.in_stream = self.time_since_last >= self.time_till_next
