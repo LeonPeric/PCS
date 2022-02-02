@@ -4,7 +4,8 @@ import numpy as np
 class Jet_stream():
     """
     Object for all jet stream related operations in the simulation.
-    
+    Values based on reference 5.
+
     Attributes:
         average_thickness: float
             The average thickness of a jet stream in m.

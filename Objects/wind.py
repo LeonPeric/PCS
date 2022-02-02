@@ -27,7 +27,7 @@ class Wind():
         """
         self.dt = dt
         scale += 1
-        # Windspeeds according to the scale of Beaufort
+        # Windspeeds according to the scale of Beaufort, reference 2
         self.Beaufort = [0, 0.2, 1.5, 3.3, 5.4, 7.9, 10.7, 13.8, 17.1, 20.7, 24.4, 28.4, 32.6, 36.8]
         self.maxspeed = self.Beaufort[scale]
         if scale > 0:

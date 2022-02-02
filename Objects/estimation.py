@@ -39,6 +39,7 @@ class Estimate():
     def solve_matrix(self, A, b):
         """
         Finding the polynomial values for a function based on given data matrix A and vector b.
+        See reference 8.
 
         A: np.array(m,n)
             The x values of all the datapoints.

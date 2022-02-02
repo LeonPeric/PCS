@@ -5,6 +5,7 @@ import math
 class Flight():
     """
     Creates Flight object for simulation.
+    The physics formulas are based on reference 6.
 
     Attributes:
         plane: object
@@ -102,7 +103,7 @@ class Flight():
         """
         Calculates the current air resistance.
         """
-        force = 1/2 * self.air_density * ((self.velocity+self.wind.speed) ** 2) * self.plane.wing_span * self.drag_cov
+        force = 1/2 * self.air_density * ((self.velocity+self.wind.speed) ** 2) * self.plane.wing_area * self.drag_cov
 
         return force
 
@@ -115,7 +116,7 @@ class Flight():
                 Current angle of the plane in radians.
         """
         C = 2 * math.pi * angle
-        lift = 1/2 * C * self.air_density * ((self.velocity+self.wind.speed)**2) * self.plane.wing_span
+        lift = 1/2 * C * self.air_density * ((self.velocity+self.wind.speed)**2) * self.plane.wing_area
 
         return lift
 
@@ -246,6 +247,8 @@ class Flight():
                 self.velocity = math.sqrt(self.forward_velocity**2 + self.upward_velocity**2)
 
             self.wind.change_wind()
+
+            # wind speed impacts the relative speed of the plane see reference 6
             self.position += (self.forward_velocity - self.wind.speed) * self.dt
             self.height += self.upward_velocity * self.dt
             self.update_lsts()
@@ -264,6 +267,8 @@ class Flight():
             self.total_fuel_used += fuel_used
             self.mass -= fuel_used
             if self.jet_stream.in_stream:
+
+                # jet streams speed impacts the relative speed of the plane see reference 6
                 self.position += (self.forward_velocity-self.jet_stream.speed) * self.dt
             else:
                 self.position += self.forward_velocity * self.dt

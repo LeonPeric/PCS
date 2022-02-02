@@ -1,6 +1,0 @@
-- Code mooi afmaken (percentile estimation)
-- Readme bestand
-- Source bestand met bronnen
-- Assertions, tests toevoegen
-- Een bestand met waar je alle objecten kan aanpassen (vliegtuig zelf niet) en die simulation kan runnen
-- Waarom is er een 1/x/whatever verband bij time difference

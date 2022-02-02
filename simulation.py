@@ -12,7 +12,7 @@ import os
 def make_plots(runs=100):
     dt = 1
     boeing = Plane(max_velocity=Constants.SPEED, empty_weight=Constants.ZERO_FUEL, fuel=Constants.FUEL, max_height=Constants.MAX_HEIGHT,
-                   power=Constants.MOTOR_POWER, wing_span=Constants.WING_SPAN, thrust=Constants.THRUST, takeoff_speed=Constants.TAKEOFF_SPEED)
+                   power=Constants.MOTOR_POWER, WING_AREA=Constants.WING_AREA, thrust=Constants.THRUST, takeoff_speed=Constants.TAKEOFF_SPEED)
 
     # -1 for no wind
     wind = Wind(-1, dt)
@@ -32,11 +32,11 @@ def make_plots(runs=100):
     plt.close(fig)
 
     # wind_speed
-    path = os.path.join("simulations", "fitting", "wind")
+    path = os.path.join("simulations", "wind")
     usedLst = []
 
-    # we make use of 7, because above this it is to dangerous to fly anyway.
-    for i in range(7):
+    # we make use of 5, because EASA regulations have a maximum tailwind of 15 knots which is wind force 4 on beaufort.
+    for i in range(5):
         used = []
         print(i)
         for j in range(runs):
@@ -58,7 +58,7 @@ def make_plots(runs=100):
     wind = Wind(-1, dt)
 
     # jet_stream_thickness
-    path = os.path.join("simulations", "fitting", "jetstream")
+    path = os.path.join("simulations", "jetstream")
     usedLst = []
 
     # 1, 10 because average thickness is 5 km so we want to check a few values below and above it.
