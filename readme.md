@@ -28,9 +28,9 @@ Other than amount of simulations there are no other parameters to change, the si
 
 # Figures
 Our figures are as following:
-![Wind simulation](simulations\wind\wind_plot_fitted_line.png)
-![Jet stream thickness simulation](simulations\jetstream\jet_stream_thickness_fitted_line.png)
-![Jet stream time difference simulation](simulations\jetstream\jet_stream_time_diff_plot_fitted_line.png)
+![Wind simulation](simulations/wind/wind_plot_fitted_line.png)
+![Jet stream thickness simulation](simulations/jetstream/jet_stream_thickness_fitted_line.png)
+![Jet stream time difference simulation](simulations/jetstream/jet_stream_time_diff_plot_fitted_line.png)
 
 
 After running the simulation it is possible to compare them by looking into the folder `simulations\jetstream` or `simulations\wind`. These figures will be made after the simulation is done running, see chapter "Running experiments"
